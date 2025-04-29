@@ -21,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ProjectSheet } from "@/components/sheets/project-sheet";
+import { useSession } from "next-auth/react";
 
 interface ProjectTableProps {
   width?: string;
@@ -251,9 +253,11 @@ export function ProjectTable({
     setCurrentPage(1);
   };
 
+  const { data: session } = useSession();
+
   return (
     <div className={`${width} ${height} space-y-4 `}>
-      <div className="flex justify-start">
+      <div className="flex justify-between items-center">
         <Select onValueChange={handleFilterChange} defaultValue="all">
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select status" />
@@ -264,10 +268,13 @@ export function ProjectTable({
             <SelectItem value="inactive">Non-Active</SelectItem>
           </SelectContent>
         </Select>
+        {session?.user?.role === "admin" && (
+          <ProjectSheet>
+            <Button variant="default">Add Project</Button>
+          </ProjectSheet>
+        )}
       </div>
-      <ScrollArea
-        className="p-4 shadow-2xl whitespace-nowrap rounded-md border"
-      >
+      <ScrollArea className="p-4 shadow-2xl whitespace-nowrap rounded-md border">
         <Table className="relative h-full ">
           <TableHeader>
             <TableRow>

@@ -20,6 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FinanceSheet } from "@/components/sheets/finance-sheet";
+import { useSession } from "next-auth/react";
 
 interface FinanceTableProps {
   width?: string;
@@ -175,9 +177,11 @@ export function FinanceTable({
     setCurrentPage(1);
   };
 
+  const { data: session } = useSession();
+
   return (
     <div className={`${width} ${height} space-y-4 `}>
-      <div className="flex justify-start">
+      <div className="flex justify-between items-center">
         <Select onValueChange={handleFilterChange} defaultValue="all">
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select status" />
@@ -188,6 +192,11 @@ export function FinanceTable({
             <SelectItem value="inactive">Non-Active</SelectItem>
           </SelectContent>
         </Select>
+        {session?.user?.role === "admin" && (
+          <FinanceSheet>
+            <Button variant="default">Update Finance</Button>
+          </FinanceSheet>
+        )}
       </div>
       <ScrollArea className="p-4 shadow-2xl whitespace-nowrap rounded-md border">
         <Table className="relative h-full ">
